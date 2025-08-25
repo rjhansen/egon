@@ -1,3 +1,19 @@
+/*
+Copyright 2025, Robert J. Hansen <rjh@sixdemonbag.org>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 #include <curl/curl.h>
 #include <gpgme.h>
 #include <print>
@@ -7,19 +23,20 @@
 #include <vector>
 
 using std::println;
+using std::regex;
 using std::regex_match;
 using std::string;
 using std::vector;
 using std::views::filter;
 
 namespace {
-const std::regex emailrx(R"(^[a-zA-Z0-9_\.]+@((protonmail\.com)|(proton\.me))$)");
+const regex email_rx(R"(^[a-zA-Z0-9_\.]+@((protonmail\.com)|(proton\.me))$)");
 gpgme_ctx_t context = nullptr;
 
-size_t populate_buffer(void* contents, size_t size, size_t nmemb, void* userp)
+size_t populate_buffer(const void* contents, size_t size, size_t num, void* user_data)
 {
-    size_t realsize = size * nmemb;
-    auto buffer = static_cast<gpgme_data_t*>(userp);
+    size_t realsize = size * num;
+    auto buffer = static_cast<gpgme_data_t*>(user_data);
     gpgme_data_new_from_mem(buffer, static_cast<const char*>(contents), realsize, 1);
     return realsize;
 }
@@ -98,7 +115,7 @@ int main(int argc, char* argv[])
     if (0 != rv)
         goto BAIL;
 
-    for (const auto& s : filter(args, [](const auto& addr) { return regex_match(addr, emailrx); })) {
+    for (const auto& s : filter(args, [](const auto& addr) { return regex_match(addr, email_rx); })) {
         rv = fetch_key_for(s);
         if (0 != rv)
             break;
