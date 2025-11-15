@@ -22,7 +22,7 @@ HTTP transaction library, which is released under the [MIT License](https://gith
 
 Egon also uses [GnuPG](https//gnupg.org)’s GnuPG Made Easy library, which is
 released under the [GNU Lesser General Public License](https://www.gnupg.org/documentation/manuals/gpgme/Library-Copying.html),
-version 2.1 (or, at your discretion, any lesser version).
+version 2.1 (or, at your discretion, any later version).
 
 All my code (which isn't much!) is under the Apache 2.0 license.
 
